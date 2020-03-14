@@ -106,10 +106,14 @@ func showBooks() {
 }
 
 func main() {
+
+
     for {
         showMenu()
+        //fmt.Println("#######")
         var option int
         fmt.Scanln(&option)
+
         switch option {
         case 1:
             addBook()
