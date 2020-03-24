@@ -8,8 +8,8 @@ package main
 */
 import (
     "fmt"
-    "time"
     "strconv"
+    "time"
 )
 
 // 格式化打印
@@ -20,16 +20,18 @@ func timePrint(t time.Time) {
 
 // 测试用例
 func exercises() {
-    start_time := time.Now().Unix()
+    start_time := time.Now()
+    // fmt.Println(start_time)
     str := "" // 声明一个字符串
     for i := 0; i < 100000; i++ { // for循环10W次拼接
         str += "golang" + strconv.Itoa(i) // 整数转字符串拼接
     }
-    end_time := time.Now().Unix()
-    fmt.Printf("执行耗时 %d秒\n", end_time-start_time)
+    time.Sleep(time.Millisecond * 30)
+    // fmt.Printf("执行耗时 %dS\n", time.Since(start_time)/1000/1000/1000)
+    fmt.Println("执行耗时:", time.Since(start_time))
 }
 
 func main() {
-    timePrint(time.Now())
+    // timePrint(time.Now())
     exercises()
 }
