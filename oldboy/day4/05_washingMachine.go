@@ -38,6 +38,7 @@ func main() {
         mode:"滚筒",
     }
     a = haier
+    //a.Dry()
     fmt.Println(a)
 }
 
