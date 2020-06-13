@@ -58,7 +58,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 		newFile.Seek(0, 0)
 		fileMeta.FileSha1 = util.FileSha1(newFile)
-		meta.UpdateFileMeta(fileMeta)
+		//meta.UpdateFileMeta(fileMeta) //原本地保存代码
+		_ = meta.UpdatefileMetaDB(fileMeta)
 
 		http.Redirect(w, r, "/file/upload/suc", http.StatusFound)
 	}
@@ -73,7 +74,13 @@ func UploadSucHandler(w http.ResponseWriter, r *http.Request) {
 func GetFileMetaHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	filehash := r.Form["filehash"][0]
-	fMeta := meta.GetFileMeta(filehash)
+	//fMeta := meta.GetFileMeta(filehash) /*原保存在本地的代码*/
+	fMeta, err := meta.GetFileMetaDB(filehash)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	data, err := json.Marshal(fMeta)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -85,6 +92,7 @@ func GetFileMetaHandler(w http.ResponseWriter, r *http.Request) {
 //文件下载
 func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
+	//接收failehash参数
 	fsha1 := r.Form.Get("filehash")
 	fm := meta.GetFileMeta(fsha1)
 
@@ -108,6 +116,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 //更新元信息接口(重命名)
 func FileMetaUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
+	//接收3个参数
 	opType := r.Form.Get("op")
 	filesha1 := r.Form.Get("filehash")
 	newFileName := r.Form.Get("filename")
@@ -137,6 +146,7 @@ func FileMetaUpdateHandler(w http.ResponseWriter, r *http.Request) {
 //删除文件及元信息
 func FileDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
+	//接收一个参数：filehash
 	fileSha1 := r.Form.Get("filehash")
 	fMeta := meta.GetFileMeta(fileSha1)
 	os.Remove(fMeta.Location) //通过os删除本地文件
