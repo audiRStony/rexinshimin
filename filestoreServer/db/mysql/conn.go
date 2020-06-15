@@ -11,13 +11,13 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"golang.org/x/tools/go/ssa/interp/testdata/src/os"
+	"os"
 )
 
 var db *sql.DB
 
 func init() {
-	sql.Open("mysql", "root:123456@tcp(192.168.106.130:3306)/fileserver?charset=utf8")
+	db, _ := sql.Open("mysql", "root:123456@tcp(192.168.106.130:3306)/fileserver?charset=utf8")
 	db.SetMaxOpenConns(1000) //最大连接数
 	err := db.Ping()
 	if err != nil {
